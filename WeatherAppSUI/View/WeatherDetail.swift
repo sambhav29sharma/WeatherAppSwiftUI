@@ -10,10 +10,11 @@ import SwiftUI
 struct WeatherDetail: View {
     //reference of viewmodel that is strong reference
     var vModeL = ViewModelUtility()
-    var options = ["°C", "°F"]
+    var options = ["°C", "°F","K"]
     @State private var selectedOptions  = "°C"
     var lat: Double = 0
     var long : Double = 0
+    @State var uniT : String = "metric"
     
     @State var imageResult : String?
     @State var forecastResult : Forecast?
@@ -33,7 +34,7 @@ struct WeatherDetail: View {
                      Text("Today,\(Date().formatted(.dateTime.month().day().hour().minute()))")
                          .fontWeight(.light)
                      
-                     Picker(selection : $selectedOptions, label: Text("")) {
+                     Picker(selection : $selectedOptions, label: Text("Units")) {
                          ForEach(options, id: \.self){
                              Text($0).tag($0)
                          
@@ -44,13 +45,32 @@ struct WeatherDetail: View {
                      .pickerStyle(.segmented)
                      .foregroundStyle(.white)
                      .frame(width : 100)
+                     .onChange(of: selectedOptions) { newValue in
+                         switch newValue {
+                         case "°F":
+                            self.uniT = "imperial"
+                             print("I AM FAHRENHEIT")
+                            
+                         case "K":
+                            self.uniT = "default"
+                             print("I AM KELVIN")
+                             
+                         default:
+                             self.uniT = "metric"
+                             print("I AM CELSIUS")
+                         }
+                         
+                         vModeL.getWeatherData(lat: lat, lon: long, unitss: uniT) { newForecast in
+                             self.forecastResult = newForecast
+                         }
+                     }
                  
                  }
                  Spacer()
                  
                  VStack(alignment: .center){
                      
-                     Text("Today: \(forecastResult?.main.temp.roundDouble() ?? "")°C")
+                     Text("Today: \(forecastResult?.main.temp.roundDouble() ?? "")\(selectedOptions)")
                          .font(.system(size: 25))
                          .frame(maxWidth: .infinity)
                          .fontWeight(.bold)
@@ -62,7 +82,7 @@ struct WeatherDetail: View {
                                  let img = UIImage(data: try! Data(contentsOf: url))!
                                  Image(uiImage: img)
                                      .resizable()
-                                     .frame(width: 250, height: 200)
+                                     .frame(width: 200, height: 200)
                                     .padding()
                              }
 //                             AsyncImage(url: URL(string: "\(imageResult ?? "")"))
@@ -96,7 +116,7 @@ struct WeatherDetail: View {
                                  Text("Min Temp")
                                      .font(.title3)
                                  
-                                 Text("\(forecastResult?.main.temp_min.roundDouble() ?? "")°C")
+                                 Text("\(forecastResult?.main.temp_min.roundDouble() ?? "")\(selectedOptions)")
                                      .font(.title2)
                                  
                              }
@@ -114,7 +134,7 @@ struct WeatherDetail: View {
                                  Text("Max Temp")
                                      .font(.title3)
                                  
-                                 Text("\(forecastResult?.main.temp_max.roundDouble() ?? "")°C")
+                                 Text("\(forecastResult?.main.temp_max.roundDouble() ?? "")\(selectedOptions)")
                                      .font(.title2)
                                  
                              }
@@ -168,7 +188,7 @@ struct WeatherDetail: View {
         .padding()
         .frame(maxWidth: .infinity, alignment: .leading)
         .onAppear(){
-            vModeL.getWeatherData(lat: lat, lon: long ) { weatherResult in
+            vModeL.getWeatherData(lat: lat, lon: long, unitss: uniT) { weatherResult in
                 
                 self.forecastResult = weatherResult
                 let iconName = forecastResult?.weather[0].icon

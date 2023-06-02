@@ -82,9 +82,9 @@ struct ModelUtility {
         }
     }
    
-    func weatherforecast(lat : Double,lon : Double, handler: @escaping (Forecast) -> Void) {
+    func weatherforecast(lat : Double,lon : Double,units : String, handler: @escaping (Forecast) -> Void) {
         
-        let forecastUrl = "\(baseurl)weather?lat=\(lat)&lon=\(lon)&appid=\(apikey)&units=metric"
+        let forecastUrl = "\(baseurl)weather?lat=\(lat)&lon=\(lon)&appid=\(apikey)&units=\(units)"
         
         //2.create request
         if let weatherUrl = URL(string: forecastUrl){

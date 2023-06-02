@@ -17,8 +17,8 @@ struct ViewModelUtility {
         weathermodel.Imageforecast(iconPic: iconn, call: callback)
     }
     
-    func getWeatherData(lat : Double, lon : Double, handler : @escaping (Forecast) -> Void) {
-        weathermodel.weatherforecast(lat: lat, lon: lon, handler: handler)
+    func getWeatherData(lat : Double, lon : Double, unitss :String, handler : @escaping (Forecast) -> Void) {
+        weathermodel.weatherforecast(lat: lat, lon: lon, units: unitss, handler: handler)
     }
     
 }
