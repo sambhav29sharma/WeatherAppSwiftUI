@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct WeatherDetail: View {
+    //reference of viewmodel that is strong reference
+    var vModeL = ViewModelUtility()
     var options = ["°C", "°F"]
     @State private var selectedOptions  = "°C"
     var lat: Double = 0
@@ -55,11 +57,18 @@ struct WeatherDetail: View {
                          .padding()
                      
                          VStack(spacing: 2){
-             
-                             AsyncImage(url: URL(string: "\(imageResult ?? "")"))
-                                 
-                                 .frame(width: 250, height: 200)
-                                 .padding()
+                             if let url = URL(string: "\(imageResult ?? "")") {
+                             
+                                 let img = UIImage(data: try! Data(contentsOf: url))!
+                                 Image(uiImage: img)
+                                     .resizable()
+                                     .frame(width: 250, height: 200)
+                                    .padding()
+                             }
+//                             AsyncImage(url: URL(string: "\(imageResult ?? "")"))
+//
+//                                 .frame(width: 250, height: 200)
+//                                 .padding()
                              
                           
                              Text("\(forecastResult?.weather[0].description ?? "")")
@@ -159,11 +168,11 @@ struct WeatherDetail: View {
         .padding()
         .frame(maxWidth: .infinity, alignment: .leading)
         .onAppear(){
-            ModelUtility.instance.weatherforecast(lat: lat, lon: long) { weatherResult in
+            vModeL.getWeatherData(lat: lat, lon: long ) { weatherResult in
                 
                 self.forecastResult = weatherResult
                 let iconName = forecastResult?.weather[0].icon
-             ModelUtility.instance.Imageforecast(iconPic: iconName!) { url in
+                vModeL.getImageVM(iconn: iconName!) { url in
                         print(url)
                  self.imageResult = url.absoluteString
                     }
