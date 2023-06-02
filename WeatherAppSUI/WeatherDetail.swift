@@ -48,7 +48,7 @@ struct WeatherDetail: View {
                  
                  VStack(alignment: .center){
                      
-                     Text("Today: \(forecastResult?.main.temp ?? 0)°C")
+                     Text("Today: \(forecastResult?.main.temp.roundDouble() ?? "")°C")
                          .font(.system(size: 25))
                          .frame(maxWidth: .infinity)
                          .fontWeight(.bold)
@@ -87,7 +87,7 @@ struct WeatherDetail: View {
                                  Text("Min Temp")
                                      .font(.title3)
                                  
-                                 Text("\(forecastResult?.main.temp_min ?? 0)°C")
+                                 Text("\(forecastResult?.main.temp_min.roundDouble() ?? "")°C")
                                      .font(.title2)
                                  
                              }
@@ -105,7 +105,7 @@ struct WeatherDetail: View {
                                  Text("Max Temp")
                                      .font(.title3)
                                  
-                                 Text("\(forecastResult?.main.temp_max ?? 0)°C")
+                                 Text("\(forecastResult?.main.temp_max.roundDouble() ?? "")°C")
                                      .font(.title2)
                                  
                              }
@@ -179,5 +179,12 @@ struct WeatherDetail: View {
 struct WeatherDetail_Previews: PreviewProvider {
     static var previews: some View {
         WeatherDetail()
+    }
+}
+//this extension is for creation of integer values from existing double values.
+extension Double{
+    func roundDouble () -> String {
+        //this format is specific for conversion.
+        return String(format: "%.0f", self)
     }
 }
